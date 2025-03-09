@@ -7,8 +7,8 @@ sns.set(style='dark')
 colors = ["#72BCD4", "#D3D3D3", "#D3D3D3", "#D3D3D3", "#D3D3D3"]
 
 
-time_qtr_df = pd.read_csv("time_qtr.csv")
-all_time_df = pd.read_csv("all_time.csv")
+time_qtr_df = pd.read_csv("dashboard/time_qtr.csv")
+all_time_df = pd.read_csv("dashboard/all_time.csv")
 
 
 time_qtr_df['year'] = time_qtr_df['yearnquarter'].str.extract(r'(\d{4})').astype(int)
