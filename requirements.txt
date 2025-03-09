@@ -1,0 +1,7 @@
+Library yang digunakan :
+
+-pandas
+-numpy
+-matplotlib
+-seaborn
+-streamlit
