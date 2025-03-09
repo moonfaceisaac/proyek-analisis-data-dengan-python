@@ -2,58 +2,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import streamlit as st
-from babel.numbers import format_currency
 sns.set(style='dark')
 
 colors = ["#72BCD4", "#D3D3D3", "#D3D3D3", "#D3D3D3", "#D3D3D3"]
 
-# def create_byseason_df(df):
-#     bygender_df = df.groupby(by="gender").customer_id.nunique().reset_index()
-#     bygender_df.rename(columns={
-#         "customer_id": "customer_count"
-#     }, inplace=True)
-    
-#     return bygender_df
-
-# def create_bytimecycle_df(df):
-#     bygender_df = df.groupby(by="gender").customer_id.nunique().reset_index()
-#     bygender_df.rename(columns={
-#         "customer_id": "customer_count"
-#     }, inplace=True)
-    
-#     return bygender_df
-
-# def create_byyrqtr_df(df):
-#     bygender_df = df.groupby(by="gender").customer_id.nunique().reset_index()
-#     bygender_df.rename(columns={
-#         "customer_id": "customer_count"
-#     }, inplace=True)
-    
-#     return bygender_df
-# time_qtr_df = pd.read_csv("time_qtr.csv")
-# all_time_df = pd.read_csv("all_time.csv")
-
-# st.subheader('Rental Bike Usage Trend')
-    
-# col1 = st.columns(2)
-    
-# with col1:
-#     max_user = time_qtr_df.cnt_max.max()
-#     st.metric("Highest amount of rental user per year along with quarter", value=max_user)
-    
-    
-# fig, ax = plt.subplots(figsize=(16, 8))
-# ax.plot(
-#     time_qtr_df["yearnquarter"],
-#     time_qtr_df["cnt_mean"],
-#     marker='o', 
-#     linewidth=2,
-#     color="#90CAF9"
-# )
-# ax.tick_params(axis='y', labelsize=20)
-# ax.tick_params(axis='x', labelsize=15)
-    
-# st.pyplot(fig)
 
 time_qtr_df = pd.read_csv("time_qtr.csv")
 all_time_df = pd.read_csv("all_time.csv")
@@ -72,7 +24,7 @@ with col1:
     max_user = time_qtr_df["cnt_max"].max()
     st.metric("Highest amount of rental user per year along with quarter", value=max_user)
 
-# Plot
+
 fig, ax = plt.subplots(figsize=(16, 8))
 ax.plot(
     time_qtr_df["yearnquarter"],
@@ -98,8 +50,10 @@ with col1:
     sns.barplot(
         y="total_customer", 
         x="season",
+        hue="season",
         data=all_time_df.sort_values(by="total_customer", ascending=False),
         palette=colors,
+        legend=False,
         ax=ax
     )
     ax.set_title("Total amount Bike rental usage by season ", loc="center", fontsize=50)
@@ -117,8 +71,10 @@ with col2:
     sns.barplot(
         y="total_customer", 
         x="time_cycle",
+        hue="time_cycle",
         data=all_time_df.sort_values(by="total_customer", ascending=False),
         palette=colors,
+        legend=False,
         ax=ax
     )
     ax.set_title("Total Amount Bike rental usage by time cycle", loc="center", fontsize=50)
