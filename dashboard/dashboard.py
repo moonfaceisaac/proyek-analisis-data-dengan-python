@@ -15,37 +15,45 @@ timecyc_time_df = pd.read_csv("dashboard/timecyc_time.csv")
 wd_time_df = pd.read_csv("dashboard/wd_time.csv")
 
 
+st.subheader('Rental Bike performance 2011-2012')
+time_qtr_df["yearnquarter"] = time_qtr_df["yearnquarter"].astype(str).str.strip()
+time_qtr_df['yr'] = time_qtr_df['yearnquarter'].str.extract(r'(\d{4})').astype(float)
+time_qtr_df['quarter'] = time_qtr_df['yearnquarter'].str.extract(r'Q(\d)').astype(float)
+time_qtr_df = time_qtr_df.dropna(subset=['yr', 'quarter']).astype({'yr': int, 'quarter': int})
+time_qtr_df = time_qtr_df.sort_values(by=['yr', 'quarter'])
+
+
 with st.sidebar:
     st.write("Welcome to Bike Rental Statistic Dashboard!")
+    st.write("Filter Bike Performance 2011-2012 Data:")
+    quarter_options = [f"{year}.Q{q}" for year in range(2011, 2013) for q in range(1, 5)]
+    selected_range = st.select_slider("Select Quarter Range:", options=quarter_options, value=(quarter_options[0], quarter_options[-1]))
+    start_year, start_qtr = map(int, selected_range[0].split('.Q'))
+    end_year, end_qtr = map(int, selected_range[1].split('.Q'))
 
-time_qtr_df['year'] = time_qtr_df['yearnquarter'].str.extract(r'(\d{4})').astype(int)
-time_qtr_df['quarter'] = time_qtr_df['yearnquarter'].str.extract(r'Q(\d)').astype(int)
-time_qtr_df = time_qtr_df.sort_values(by=['year', 'quarter'])
 
+filtered_df = time_qtr_df[(time_qtr_df['yr'] > start_year) | ((time_qtr_df['yr'] == start_year) & (time_qtr_df['quarter'] >= start_qtr))]
+filtered_df = filtered_df[(filtered_df['yr'] < end_year) | ((filtered_df['yr'] == end_year) & (filtered_df['quarter'] <= end_qtr))]
 
-st.subheader('Rental Bike performance 2011-2012')
+total_avg = round(filtered_df["cnt_mean"].max())
+st.metric("Highest average in a quarter", value=total_avg)
 
-col1, _ = st.columns(2)  
-
-with col1:
-    max_user = round(time_qtr_df["cnt_mean"].max())
-    st.metric("Highest average in a quarter", value=max_user)
 
 
 fig, ax = plt.subplots(figsize=(32, 16))
 ax.plot(
-    time_qtr_df["yearnquarter"],
-    time_qtr_df["cnt_mean"],
+
+    filtered_df["yearnquarter"],
+    filtered_df["cnt_mean"],
     marker='o',
     linewidth=2,
     color="#90CAF9"
 )
 ax.tick_params(axis='y', labelsize=35)
-ax.tick_params(axis='x', labelsize=40)
-ax.set_xlabel("Year & Quarter", fontsize=34)
-ax.set_ylabel("Average numbers of rental bike recorded", fontsize=34)
+ax.tick_params(axis='x', labelsize=40,rotation=45)
+ax.set_xlabel("Year & Quarter", fontsize=38)
+ax.set_ylabel("Average numbers of rental bike recorded", fontsize=38)
 ax.set_title("Rental Bike performance 2011-2012 based on average total recorded per quarter", loc="center",fontsize=50)
-
 st.pyplot(fig)
 
 
